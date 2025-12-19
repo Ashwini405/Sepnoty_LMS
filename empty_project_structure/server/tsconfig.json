@@ -1,0 +1,42 @@
+// {
+//   "compilerOptions": {
+//     "lib": [
+//       "ESNext"
+//     ],
+//     "module": "ESNext",
+//     "target": "ESNext",
+//     "moduleResolution": "bundler",
+//     "moduleDetection": "force",
+//     "allowImportingTsExtensions": true,
+//     "strict": false,
+//     "downlevelIteration": true,
+//     "skipLibCheck": true,
+//     "allowJs": true,
+//     "checkJs": false,
+//     "noEmit": true,
+//     "esModuleInterop": true,
+//     "forceConsistentCasingInFileNames": true
+//   },
+//   "include": [
+//     "*.ts",
+//     "lib/**/*.ts"
+//   ]
+// }
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": "dist",
+
+    "esModuleInterop": true,
+    "strict": false,
+    "skipLibCheck": true,
+
+    "types": ["node"],
+    "lib": ["ES2020"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

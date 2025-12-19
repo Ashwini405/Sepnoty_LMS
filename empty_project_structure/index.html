@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="./">
+    <title>Sepnoty Club - Learn, Grow, Succeed</title>
+    <meta name="title" content="Sepnoty Club - Learn, Grow, Succeed" />
+    <meta name="description" content="Your premium learning destination with AI-powered courses, personalized learning paths, and expert instructors." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://idealane.com" />
+    <meta property="og:title" content="Sepnoty Club - Learn, Grow, Succeed" />
+    <meta property="og:description" content="Your premium learning destination with AI-powered courses, personalized learning paths, and expert instructors." />
+    <meta property="og:image" content="https://idealane.com/idealane_share.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://idealane.com" />
+    <meta name="twitter:title" content="Sepnoty Club - Learn, Grow, Succeed" />
+    <meta name="twitter:description" content="Your premium learning destination with AI-powered courses, personalized learning paths, and expert instructors." />
+    <meta name="twitter:image" content="https://idealane.com/idealane_share.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary: 262 83% 58%;
+        --primary-hover: 262 83% 48%;
+        --primary-light: 262 83% 95%;
+        --success: 142 76% 36%;
+        --danger: 0 84% 60%;
+        --warning: 38 92% 50%;
+        --background: 0 0% 100%;
+        --surface: 240 5% 96%;
+        --foreground: 240 10% 4%;
+        --muted: 240 4% 46%;
+        --border: 240 6% 90%;
+        --radius: 0.75rem;
+        --accent: 280 100% 70%;
+        --gradient-start: 262 83% 58%;
+        --gradient-end: 280 100% 70%;
+      }
+      
+      .dark {
+        --primary: 262 83% 65%;
+        --primary-hover: 262 83% 75%;
+        --primary-light: 262 30% 20%;
+        --background: 240 10% 4%;
+        --surface: 240 6% 10%;
+        --foreground: 0 0% 98%;
+        --muted: 240 5% 65%;
+        --border: 240 4% 16%;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      .gradient-text {
+        background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .gradient-bg {
+        background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+      }
+      
+      .glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+      
+      .animate-pulse-slow {
+        animation: pulse 3s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: 'hsl(var(--primary))',
+              'primary-hover': 'hsl(var(--primary-hover))',
+              'primary-light': 'hsl(var(--primary-light))',
+              success: 'hsl(var(--success))',
+              danger: 'hsl(var(--danger))',
+              warning: 'hsl(var(--warning))',
+              background: 'hsl(var(--background))',
+              surface: 'hsl(var(--surface))',
+              foreground: 'hsl(var(--foreground))',
+              muted: 'hsl(var(--muted))',
+              border: 'hsl(var(--border))',
+              accent: 'hsl(var(--accent))',
+            },
+            borderRadius: {
+              DEFAULT: 'var(--radius)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,266 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import {
+  BookOpen, Clock, Award, TrendingUp, Play, Star,
+  ChevronRight, Zap, Target, Calendar, BarChart,
+  ArrowUpRight, Sparkles, FileText, Briefcase
+} from 'lucide-react'
+import { useAuth } from '../App'
+
+export default function Dashboard() {
+  const { user, enrollments, getProgress } = useAuth()
+  const navigate = useNavigate()
+
+  const stats = {
+    coursesEnrolled: enrollments.length || 3,
+    hoursLearned: (enrollments.length || 3) * 12,
+    certificates: enrollments.filter(e => e.progress === 100).length,
+    streak: 7,
+  }
+
+  const allCourses = [
+    { id: 1, title: 'Complete Web Development Bootcamp', instructor: 'Dr. Angela Yu', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400', nextLesson: 'CSS Grid Layout' },
+    { id: 2, title: 'UI/UX Design Masterclass', instructor: 'Sarah Johnson', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400', nextLesson: 'Figma Basics' },
+    { id: 3, title: 'Data Science with Python', instructor: 'Prof. John Smith', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400', nextLesson: 'Pandas DataFrames' },
+  ]
+
+  const continueLearning = allCourses
+    .filter(c => {
+      const progress = getProgress(c.id)
+      return progress > 0 && progress < 100
+    })
+    .map(c => ({ ...c, progress: getProgress(c.id) }))
+
+  const displayCourses = continueLearning.length > 0 ? continueLearning : allCourses.slice(0, 2).map(c => ({
+    ...c,
+    progress: c.id === 1 ? 45 : 72
+  }))
+
+  const upcomingEvents = [
+    { id: 1, title: 'Live: React Best Practices', date: 'Today, 3:00 PM', type: 'live' },
+    { id: 2, title: 'Assignment Due: Python Basics', date: 'Tomorrow, 11:59 PM', type: 'deadline' },
+    { id: 3, title: 'Quiz: Web Development', date: 'Mar 15, 10:00 AM', type: 'quiz' },
+  ]
+
+  const quickActions = [
+    { icon: FileText, label: 'Assignments', path: '/assignments', color: 'bg-primary/10 text-primary' },
+    { icon: Briefcase, label: 'Resume', path: '/resume', color: 'bg-success/10 text-success' },
+    { icon: Target, label: 'Interview Prep', path: '/interview', color: 'bg-warning/10 text-warning' },
+    { icon: Award, label: 'Certificates', path: '/certificates', color: 'bg-danger/10 text-danger' },
+  ]
+
+  return (
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+            Welcome back, <span className="gradient-text">{user?.name?.split(' ')[0]}</span>!
+          </h1>
+          <p className="text-muted">Continue your learning journey</p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+          {[
+            { label: 'Courses Enrolled', value: stats.coursesEnrolled, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
+            { label: 'Hours Learned', value: stats.hoursLearned, icon: Clock, color: 'text-success', bg: 'bg-success/10' },
+            { label: 'Certificates', value: stats.certificates, icon: Award, color: 'text-warning', bg: 'bg-warning/10' },
+            { label: 'Day Streak', value: stats.streak, icon: Zap, color: 'text-danger', bg: 'bg-danger/10' },
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-surface rounded-2xl p-4 md:p-6 hover:shadow-lg transition-all"
+            >
+              <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mb-3`}>
+                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-foreground mb-1">{stat.value}</div>
+              <div className="text-sm text-muted">{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+        >
+          {quickActions.map((action, i) => (
+            <motion.button
+              key={action.label}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate(action.path)}
+              className={`${action.color} p-4 rounded-2xl text-left transition-all hover:shadow-lg`}
+            >
+              <action.icon className="w-6 h-6 mb-2" />
+              <span className="font-medium">{action.label}</span>
+            </motion.button>
+          ))}
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Play className="w-5 h-5 text-primary" />
+                  Continue Learning
+                </h2>
+                <button
+                  onClick={() => navigate('/courses')}
+                  className="text-sm text-primary hover:text-primary-hover transition-colors flex items-center gap-1"
+                >
+                  View All <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                {displayCourses.map((course, i) => (
+                  <motion.div
+                    key={course.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                    onClick={() => navigate(`/course/${course.id}`)}
+                    className="bg-surface rounded-2xl p-4 flex gap-4 hover:shadow-lg transition-all cursor-pointer group"
+                  >
+                    <img
+                      src={course.image}
+                      alt={course.title}
+                      className="w-24 h-24 md:w-32 md:h-24 object-cover rounded-xl"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground mb-1 truncate group-hover:text-primary transition-colors">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-muted mb-2">{course.instructor}</p>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex-1 h-2 bg-border rounded-full overflow-hidden">
+                          <div
+                            className="h-full gradient-bg rounded-full transition-all"
+                            style={{ width: `${course.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-foreground">{course.progress}%</span>
+                      </div>
+                      <p className="text-xs text-muted flex items-center gap-1">
+                        <Target className="w-3 h-3" />
+                        Next: {course.nextLesson}
+                      </p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="self-center w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/25"
+                    >
+                      <Play className="w-5 h-5 ml-0.5" />
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+          </div>
+
+          <div className="space-y-6">
+            <motion.section
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-surface rounded-2xl p-6"
+            >
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                Upcoming
+              </h2>
+              <div className="space-y-4">
+                {upcomingEvents.map((event) => (
+                  <div key={event.id} className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${event.type === 'live' ? 'bg-danger/10' :
+                        event.type === 'deadline' ? 'bg-warning/10' : 'bg-primary/10'
+                      }`}>
+                      {event.type === 'live' ? <Play className="w-5 h-5 text-danger" /> :
+                        event.type === 'deadline' ? <Clock className="w-5 h-5 text-warning" /> :
+                          <BarChart className="w-5 h-5 text-primary" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground text-sm truncate">{event.title}</p>
+                      <p className="text-xs text-muted">{event.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+
+            <motion.section
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-surface rounded-2xl p-6"
+            >
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Weekly Progress
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-end h-32">
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => {
+                    const heights = [60, 80, 45, 90, 70, 30, 50]
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-2">
+                        <div
+                          className="w-8 gradient-bg rounded-lg transition-all hover:opacity-80"
+                          style={{ height: `${heights[i]}%` }}
+                        />
+                        <span className="text-xs text-muted">{day}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="text-center pt-4 border-t border-border">
+                  <p className="text-sm text-muted">This week</p>
+                  <p className="text-2xl font-bold text-foreground">12.5 hours</p>
+                  <p className="text-xs text-success flex items-center justify-center gap-1">
+                    <ArrowUpRight className="w-3 h-3" />
+                    25% more than last week
+                  </p>
+                </div>
+              </div>
+            </motion.section>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+              className="gradient-bg rounded-2xl p-6 text-white"
+            >
+              <Sparkles className="w-8 h-8 mb-3" />
+              <h3 className="text-lg font-semibold mb-2">AI Study Assistant</h3>
+              <p className="text-white/80 text-sm mb-4">
+                Get instant help with any topic. Our AI tutor is available 24/7.
+              </p>
+              <button
+                onClick={() => navigate('/ai')}
+                className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-lg py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                Start Chat
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
