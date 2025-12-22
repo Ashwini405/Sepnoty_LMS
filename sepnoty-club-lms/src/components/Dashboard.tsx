@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+
+
+
+
 import {
   BookOpen, Clock, Award, TrendingUp, Play, Star,
   ChevronRight, Zap, Target, Calendar, BarChart,
@@ -49,10 +53,114 @@ export default function Dashboard() {
     { icon: Target, label: 'Interview Prep', path: '/interview', color: 'bg-warning/10 text-warning' },
     { icon: Award, label: 'Certificates', path: '/certificates', color: 'bg-danger/10 text-danger' },
   ]
+  const menuItems = [
+  { label: "Overview", icon: BookOpen, path: "/overview" },
+  { label: "Courses", icon: Play, path: "/courses" },
+  { label: "Assignments", icon: FileText, path: "/assignments" },
+  { label: "Quizzes", icon: BarChart, path: "/quizzes" },
+  { label: "Kanban Board", icon: Target, path: "/kanban" },
+  { label: "Messages", icon: Calendar, path: "/messages" },
+  { label: "Analytics", icon: TrendingUp, path: "/analytics" },
+  { label: "Settings", icon: Award, path: "/settings" },
+  { label: "Admin", icon: Zap, path: "/admin" },
+]
+
+const [seconds, setSeconds] = useState(1500)
+const [running, setRunning] = useState(false)
+useEffect(() => {
+  if (!running) return
+  if (seconds === 0) return setRunning(false)
+
+  const timer = setInterval(() => {
+    setSeconds(s => s - 1)
+  }, 1000)
+
+  return () => clearInterval(timer)
+}, [running, seconds])
+const aiTips = [
+  "Finish the typography lesson before noon for a focus boost.",
+  "Revise CSS Grid today to improve layouts.",
+  "Practice 2 coding problems to earn XP."
+]
+
+const randomTip = aiTips[Math.floor(Math.random() * aiTips.length)]
+const [task, setTask] = useState("")
+const [todos, setTodos] = useState([
+  "Complete 2 lessons",
+  "Revise React hooks",
+])
+
+
+
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
+    
+    
+    <div className="min-h-screen bg-background flex">
+    {/* ================= SIDEBAR ================= */}
+{/* ================= SIDEBAR ================= */}
+<aside className="w-64 bg-white border-r px-6 py-8 hidden lg:flex flex-col">
+
+  {/* TOP CONTENT */}
+  <div>
+    
+    {/* Logo */}
+    <div className="flex items-center gap-3 mb-8">
+      <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+        S
+      </div>
+      <div>
+        <h2 className="font-bold text-lg">Sepnoty Club</h2>
+        <p className="text-xs text-muted">e-Learning Dashboard</p>
+      </div>
+    </div>
+
+    {/* Campus */}
+    <div className="bg-surface rounded-xl p-4 mb-6">
+      <p className="text-xs text-muted mb-1">Your campus</p>
+      <p className="font-medium text-sm">
+        Narasaraopeta Engineering College
+      </p>
+    </div>
+
+    {/* Menu */}
+    <p className="text-xs text-muted mb-2">MENU</p>
+    <nav className="space-y-1">
+      {menuItems.map((item, i) => (
+        <button
+          key={i}
+          onClick={() => navigate(item.path)}
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm hover:bg-primary/10 text-left"
+        >
+          <item.icon className="w-4 h-4 text-primary" />
+          {item.label}
+        </button>
+        
+      ))}
+    </nav>
+  </div>
+
+  {/* ================= BOTTOM (FIX) ================= */}
+  <div className="mt-auto pt-6">
+    <div className="bg-primary/10 rounded-xl p-4 text-center">
+      <p className="text-sm font-semibold mb-1">
+        Pro Certification!
+      </p>
+      <p className="text-xs text-muted mb-3">
+        Get verified certifications from top universities.
+      </p>
+      <button className="w-full bg-primary text-white py-2 rounded-lg text-sm">
+        Learn More
+      </button>
+    </div>
+  </div>
+
+</aside>
+
+
+
       <div className="max-w-7xl mx-auto px-4 md:px-8">
+      
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +193,9 @@ export default function Dashboard() {
               <div className="text-sm text-muted">{stat.label}</div>
             </motion.div>
           ))}
+          
         </div>
+
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -109,6 +219,7 @@ export default function Dashboard() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
+          
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -171,9 +282,172 @@ export default function Dashboard() {
                 ))}
               </div>
             </motion.section>
+            {/* ================= TIME SPENT / WEEKLY FOCUS ENERGY ================= */}
+<motion.section
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.15 }}
+  className="bg-surface rounded-2xl p-6 mb-8"
+>
+  <div className="flex items-center justify-between mb-4">
+    <div>
+      <h3 className="font-semibold text-lg">Time spent</h3>
+      <p className="text-xs text-muted">Your weekly focus energy</p>
+    </div>
+
+    <button
+      onClick={() => setRunning(true)}
+      className="text-xs bg-primary/10 text-primary px-4 py-1 rounded-full"
+    >
+      Focus
+    </button>
+  </div>
+
+  <div className="flex justify-between items-end h-40">
+    {[
+      { day: "2 May", value: 40 },
+      { day: "3 May", value: 90, hot: true },
+      { day: "4 May", value: 60 },
+      { day: "5 May", value: 50 },
+    ].map((d, i) => (
+      <div key={i} className="flex flex-col items-center gap-2">
+        <div className="w-10 h-full bg-border rounded-full flex items-end">
+          <div
+            className={`w-full rounded-full ${
+              d.hot ? "bg-primary" : "bg-primary/30"
+            }`}
+            style={{ height: `${d.value}%` }}
+          />
+        </div>
+
+        {d.hot && (
+          <span className="text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full">
+            Hot: 3h 40m
+          </span>
+        )}
+
+        <span className="text-xs text-muted">{d.day}</span>
+      </div>
+    ))}
+  </div>
+  
+</motion.section>
+<div className="bg-surface rounded-2xl p-6">
+  <div className="flex justify-between mb-2">
+    <h3 className="font-semibold">AI study coach</h3>
+    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+      New tip
+    </span>
+  </div>
+
+  <p className="text-sm text-muted mb-4">{randomTip}</p>
+
+  <div className="flex gap-3 text-xs">
+    <span className="bg-primary/10 px-3 py-1 rounded-full">Level 2</span>
+    <span className="bg-success/10 px-3 py-1 rounded-full">120 XP</span>
+  </div>
+</div>
+{/* ================= TO DO LIST ================= */}
+<motion.section
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+  className="bg-surface rounded-2xl p-6"
+>
+  <div className="flex items-center justify-between mb-4">
+    <h3 className="font-semibold text-lg">To Do List</h3>
+    <span className="text-xs text-muted">
+      {todos.length} tasks
+    </span>
+  </div>
+
+  <div className="flex gap-2 mb-4">
+    <input
+      value={task}
+      onChange={e => setTask(e.target.value)}
+      placeholder="Add new task"
+      className="flex-1 border rounded-lg px-3 py-2 text-sm"
+    />
+    <button
+      onClick={() => {
+        if (!task.trim()) return
+        setTodos([...todos, task])
+        setTask("")
+      }}
+      className="bg-primary text-white px-4 rounded-lg text-sm"
+    >
+      Add
+    </button>
+  </div>
+
+  <ul className="space-y-3 text-sm">
+    {todos.map((t, i) => (
+      <li
+        key={i}
+        className="flex items-center justify-between bg-background px-3 py-2 rounded-lg"
+      >
+        <span>{t}</span>
+        <button
+          onClick={() =>
+            setTodos(todos.filter((_, idx) => idx !== i))
+          }
+          className="text-success font-bold"
+        >
+          ✓
+        </button>
+      </li>
+    ))}
+  </ul>
+</motion.section>
+
+
           </div>
+          
 
           <div className="space-y-6">
+            {/* ================= FOCUS MODE ================= */}
+<motion.section
+  initial={{ opacity: 0, x: 20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ delay: 0.45 }}
+  className="bg-surface rounded-2xl p-6"
+>
+  <div className="flex justify-between mb-2">
+    <h3 className="font-semibold">Focus mode</h3>
+    <span className="text-xs text-muted">
+      {running ? "Running" : "Paused"}
+    </span>
+  </div>
+
+  <p className="text-4xl font-bold mb-1">
+    {`${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`}
+  </p>
+
+  <p className="text-xs text-muted mb-4">
+    25 minute deep focus timer
+  </p>
+
+  <div className="flex gap-3">
+    <button
+      onClick={() => setRunning(true)}
+      className="bg-primary text-white px-4 py-2 rounded-xl"
+    >
+      Start
+    </button>
+
+    <button
+      onClick={() => {
+        setRunning(false)
+        setSeconds(1500)
+      }}
+      className="border px-4 py-2 rounded-xl"
+    >
+      Reset
+    </button>
+  </div>
+</motion.section>
+
+
             <motion.section
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -202,6 +476,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </motion.section>
+            
 
             <motion.section
               initial={{ opacity: 0, x: 20 }}
@@ -238,6 +513,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </motion.section>
+            
 
             <motion.div
               initial={{ opacity: 0, x: 20 }}
