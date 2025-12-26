@@ -368,159 +368,485 @@
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`)
 // })
-import express, { Request, Response } from 'express'
-import cors from 'cors'
-import bcrypt from 'bcryptjs'
-import { supabase, getTableName, isSupabaseReady } from './lib/supabase.js'
-console.log('Supabase ready:', isSupabaseReady())
+// import express, { Request, Response } from 'express'
+// import cors from 'cors'
+// import bcrypt from 'bcryptjs'
+// import { supabase, getTableName, isSupabaseReady } from './lib/supabase.js'
+// console.log('Supabase ready:', isSupabaseReady())
 
 
-const app = express()
-const PORT = process.env.PORT || 3001
+// const app = express()
+// const PORT = process.env.PORT || 3001
 
-app.use(cors({ origin: '*' }))
-app.use(express.json())
+// app.use(cors({ origin: '*' }))
+// app.use(express.json())
+
+// /* ================= AUTH: REGISTER ================= */
+// app.post('/api/auth/register', async (req: Request, res: Response) => {
+//   try {
+//     const { name, email, password } = req.body || {}
+
+//     if (!name?.trim() || !email?.trim() || !password) {
+//       return res.status(400).json({ error: 'Name, email, and password are required' })
+//     }
+
+//     if (password.length < 6) {
+//       return res.status(400).json({ error: 'Password must be at least 6 characters' })
+//     }
+
+//     if (!isSupabaseReady() || !supabase) {
+//       return res.status(500).json({ error: 'Authentication service unavailable' })
+//     }
+
+//     const normalizedEmail = email.trim().toLowerCase()
+
+//     // Check if user already exists
+//     const { data: existing } = await supabase
+//       .from(getTableName('users'))
+//       .select('id')
+//       .eq('email', normalizedEmail)
+//       .single()
+
+//     if (existing) {
+//       return res.status(400).json({ error: 'Email already registered' })
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10)
+
+//     const { data: user, error } = await supabase
+//       .from(getTableName('users'))
+//       .insert({
+//         name: name.trim(),
+//         email: normalizedEmail,
+//         password: hashedPassword
+//       })
+//       .select('id, name, email, created_at')
+//       .single()
+
+//     if (error) {
+//       console.error('Register error:', error)
+//       return res.status(500).json({ error: 'Failed to create account' })
+//     }
+
+//     return res.status(201).json({ user })
+//   } catch (err) {
+//     console.error('Register exception:', err)
+//     return res.status(500).json({ error: 'Registration failed' })
+//   }
+// })
+
+// /* ================= AUTH: LOGIN ================= */
+// app.post('/api/auth/login', async (req: Request, res: Response) => {
+//   try {
+//     const { email, password } = req.body || {}
+
+//     if (!email?.trim() || !password) {
+//       return res.status(400).json({ error: 'Email and password are required' })
+//     }
+
+//     if (!isSupabaseReady() || !supabase) {
+//       return res.status(500).json({ error: 'Authentication service unavailable' })
+//     }
+
+//     const normalizedEmail = email.trim().toLowerCase()
+
+//     const { data: user, error } = await supabase
+//       .from(getTableName('users'))
+//       .select('*')
+//       .eq('email', normalizedEmail)
+//       .single()
+
+//     if (error || !user) {
+//       return res.status(401).json({ error: 'Invalid email or password' })
+//     }
+
+//     const validPassword = await bcrypt.compare(password, user.password)
+//     if (!validPassword) {
+//       return res.status(401).json({ error: 'Invalid email or password' })
+//     }
+
+//     const { password: _, ...safeUser } = user
+//     return res.json({ user: safeUser })
+//   } catch (err) {
+//     console.error('Login exception:', err)
+//     return res.status(500).json({ error: 'Login failed' })
+//   }
+// })
+
+// /* ================= DASHBOARD ================= */
+// app.get('/api/dashboard/:userId', async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params
+
+//     if (!isSupabaseReady() || !supabase) {
+//       return res.status(500).json({ error: 'Service unavailable' })
+//     }
+
+//     const { data: enrollments } = await supabase
+//       .from(getTableName('enrollments'))
+//       .select('*, course:courses(*)')
+//       .eq('user_id', userId)
+
+//     const stats = {
+//       coursesEnrolled: enrollments?.length || 0,
+//       hoursLearned: Math.floor(Math.random() * 50) + 10,
+//       certificates: enrollments?.filter((e: any) => e.progress === 100).length || 0,
+//       streak: Math.floor(Math.random() * 10) + 1
+//     }
+
+//     res.json({ stats, courses: enrollments || [] })
+//   } catch (err) {
+//     console.error('Dashboard error:', err)
+//     res.status(500).json({ error: 'Failed to load dashboard' })
+//   }
+// })
+
+// /* ================= COURSES ================= */
+// app.get('/api/courses', async (_req: Request, res: Response) => {
+//   try {
+//     if (!isSupabaseReady() || !supabase) {
+//       return res.status(500).json({ error: 'Service unavailable' })
+//     }
+
+//     const { data: courses } = await supabase
+//       .from(getTableName('courses'))
+//       .select('*')
+//       .order('created_at', { ascending: false })
+
+//     res.json({ courses: courses || [] })
+//   } catch (err) {
+//     console.error('Courses error:', err)
+//     res.status(500).json({ error: 'Failed to fetch courses' })
+//   }
+// })
+
+// /* ================= SERVER ================= */
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on http://localhost:${PORT}`)
+// })
+// import express, { Request, Response } from "express";
+// import cors from "cors";
+// import bcrypt from "bcryptjs";
+
+// import { supabase, getTableName, isSupabaseReady } from "./lib/supabase.js";
+// import { generateOTP, hashOTP } from "./utils/otp.js";
+// import { sendOTP } from "./utils/mailer.js";
+
+// console.log("Supabase ready:", isSupabaseReady());
+
+// const app = express();
+// const PORT = process.env.PORT || 3001;
+
+// app.use(cors({ origin: "*" }));
+// app.use(express.json());
+
+// /* ================= AUTH: REGISTER ================= */
+// app.post("/api/auth/register", async (req: Request, res: Response) => {
+//   try {
+//     const { name, email, password } = req.body || {};
+
+//     if (!name || !email || !password) {
+//       return res.status(400).json({ error: "All fields required" });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const { data, error } = await supabase!
+//       .from("users")
+//       .insert({
+//         name,
+//         email: email.toLowerCase(),
+//         password: hashedPassword,
+//       })
+//       .select("id, name, email")
+//       .single();
+
+//     if (error) throw error;
+
+//     res.status(201).json({ user: data });
+//   } catch (err) {
+//     res.status(500).json({ error: "Registration failed" });
+//   }
+// });
+
+// /* ================= AUTH: LOGIN ================= */
+// app.post("/api/auth/login", async (req: Request, res: Response) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const { data: user } = await supabase!
+//       .from("users")
+//       .select("*")
+//       .eq("email", email.toLowerCase())
+//       .single();
+
+//     if (!user) {
+//       return res.status(401).json({ error: "Invalid credentials" });
+//     }
+
+//     const valid = await bcrypt.compare(password, user.password);
+//     if (!valid) {
+//       return res.status(401).json({ error: "Invalid credentials" });
+//     }
+
+//     const { password: _, ...safeUser } = user;
+//     res.json({ user: safeUser });
+//   } catch {
+//     res.status(500).json({ error: "Login failed" });
+//   }
+// });
+
+// /* ================= OTP: SEND ================= */
+// app.post("/api/auth/send-otp", async (req: Request, res: Response) => {
+//   try {
+//     const { email } = req.body;
+//     if (!email) return res.status(400).json({ error: "Email required" });
+
+//     const otp = generateOTP();
+//     const otpHash = hashOTP(otp);
+//     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+//     await supabase!.from("email_otps").insert({
+//       email: email.toLowerCase(),
+//       otp_hash: otpHash,
+//       expires_at: expiresAt,
+//     });
+
+//     await sendOTP(email, otp);
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to send OTP" });
+//   }
+// });
+
+// /* ================= OTP: VERIFY ================= */
+// app.post("/api/auth/verify-otp", async (req: Request, res: Response) => {
+//   try {
+//     const { email, otp } = req.body;
+//     const otpHash = hashOTP(otp);
+
+//     const { data } = await supabase!
+//       .from("email_otps")
+//       .select("*")
+//       .eq("email", email.toLowerCase())
+//       .eq("otp_hash", otpHash)
+//       .eq("verified", false)
+//       .gte("expires_at", new Date())
+//       .single();
+
+//     if (!data) {
+//       return res.status(400).json({ error: "Invalid or expired OTP" });
+//     }
+
+//     await supabase!
+//       .from("email_otps")
+//       .update({ verified: true })
+//       .eq("id", data.id);
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     res.status(500).json({ error: "OTP verification failed" });
+//   }
+// });
+
+// /* ================= SERVER ================= */
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on http://localhost:${PORT}`);
+// });
+import express, { Request, Response } from "express";
+import cors from "cors";
+import bcrypt from "bcryptjs";
+
+import { supabase, isSupabaseReady } from "./lib/supabase.js";
+import { generateOTP, hashOTP } from "./utils/otp.js";
+import { sendOTP } from "./utils/mailer.js";
+
+console.log("Supabase ready:", isSupabaseReady());
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(cors({ origin: "*" }));
+app.use(express.json());
+
+/* ================= HEALTH CHECK ================= */
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "OK" });
+});
 
 /* ================= AUTH: REGISTER ================= */
-app.post('/api/auth/register', async (req: Request, res: Response) => {
+app.post("/api/auth/register", async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body || {}
-
-    if (!name?.trim() || !email?.trim() || !password) {
-      return res.status(400).json({ error: 'Name, email, and password are required' })
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' })
-    }
-
     if (!isSupabaseReady() || !supabase) {
-      return res.status(500).json({ error: 'Authentication service unavailable' })
+      return res.status(500).json({ error: "Service unavailable" });
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const { name, email, password } = req.body || {};
 
-    // Check if user already exists
-    const { data: existing } = await supabase
-      .from(getTableName('users'))
-      .select('id')
-      .eq('email', normalizedEmail)
-      .single()
-
-    if (existing) {
-      return res.status(400).json({ error: 'Email already registered' })
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "All fields required" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const normalizedEmail = email.toLowerCase().trim();
 
-    const { data: user, error } = await supabase
-      .from(getTableName('users'))
+    const { data, error } = await supabase
+      .from("users")
       .insert({
         name: name.trim(),
         email: normalizedEmail,
-        password: hashedPassword
+        password: hashedPassword,
       })
-      .select('id, name, email, created_at')
-      .single()
+      .select("id, name, email")
+      .single();
 
-    if (error) {
-      console.error('Register error:', error)
-      return res.status(500).json({ error: 'Failed to create account' })
-    }
+    if (error) throw error;
 
-    return res.status(201).json({ user })
+    res.status(201).json({ user: data });
   } catch (err) {
-    console.error('Register exception:', err)
-    return res.status(500).json({ error: 'Registration failed' })
+    console.error("Register error:", err);
+    res.status(500).json({ error: "Registration failed" });
   }
-})
+});
 
 /* ================= AUTH: LOGIN ================= */
-app.post('/api/auth/login', async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body || {}
-
-    if (!email?.trim() || !password) {
-      return res.status(400).json({ error: 'Email and password are required' })
-    }
-
-    if (!isSupabaseReady() || !supabase) {
-      return res.status(500).json({ error: 'Authentication service unavailable' })
-    }
-
-    const normalizedEmail = email.trim().toLowerCase()
-
-    const { data: user, error } = await supabase
-      .from(getTableName('users'))
-      .select('*')
-      .eq('email', normalizedEmail)
-      .single()
-
-    if (error || !user) {
-      return res.status(401).json({ error: 'Invalid email or password' })
-    }
-
-    const validPassword = await bcrypt.compare(password, user.password)
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid email or password' })
-    }
-
-    const { password: _, ...safeUser } = user
-    return res.json({ user: safeUser })
-  } catch (err) {
-    console.error('Login exception:', err)
-    return res.status(500).json({ error: 'Login failed' })
-  }
-})
-
-/* ================= DASHBOARD ================= */
-app.get('/api/dashboard/:userId', async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params
-
-    if (!isSupabaseReady() || !supabase) {
-      return res.status(500).json({ error: 'Service unavailable' })
-    }
-
-    const { data: enrollments } = await supabase
-      .from(getTableName('enrollments'))
-      .select('*, course:courses(*)')
-      .eq('user_id', userId)
-
-    const stats = {
-      coursesEnrolled: enrollments?.length || 0,
-      hoursLearned: Math.floor(Math.random() * 50) + 10,
-      certificates: enrollments?.filter((e: any) => e.progress === 100).length || 0,
-      streak: Math.floor(Math.random() * 10) + 1
-    }
-
-    res.json({ stats, courses: enrollments || [] })
-  } catch (err) {
-    console.error('Dashboard error:', err)
-    res.status(500).json({ error: 'Failed to load dashboard' })
-  }
-})
-
-/* ================= COURSES ================= */
-app.get('/api/courses', async (_req: Request, res: Response) => {
+app.post("/api/auth/login", async (req: Request, res: Response) => {
   try {
     if (!isSupabaseReady() || !supabase) {
-      return res.status(500).json({ error: 'Service unavailable' })
+      return res.status(500).json({ error: "Service unavailable" });
     }
 
-    const { data: courses } = await supabase
-      .from(getTableName('courses'))
-      .select('*')
-      .order('created_at', { ascending: false })
+    const { email, password } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    res.json({ courses: courses || [] })
+    const { data: user } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", normalizedEmail)
+      .single();
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const { password: _, ...safeUser } = user;
+    res.json({ user: safeUser });
   } catch (err) {
-    console.error('Courses error:', err)
-    res.status(500).json({ error: 'Failed to fetch courses' })
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Login failed" });
   }
-})
+});
+
+/* ================= OTP: SEND ================= */
+/* ================= OTP: SEND ================= */
+app.post("/api/auth/send-otp", async (req: Request, res: Response) => {
+  console.log("➡️ SEND OTP API CALLED");
+
+  try {
+    const { email } = req.body;
+    console.log("📧 Email received:", email);
+
+    if (!email) {
+      return res.status(400).json({ error: "Email required" });
+    }
+
+    const otp = generateOTP();
+    console.log("🔐 Generated OTP:", otp);
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    console.log("💾 Inserting OTP into email_otps table...");
+    const { error } = await supabase!
+      .from("email_otps")
+      .insert({
+        email: email.toLowerCase(),
+        otp: otp,                 // ✅ STORE PLAIN OTP
+        expires_at: expiresAt,
+        verified: false,
+      });
+
+    if (error) {
+      console.error("❌ Supabase insert error:", error);
+      throw error;
+    }
+
+    console.log("📨 Sending OTP email...");
+    await sendOTP(email, otp);
+
+    console.log("✅ OTP SENT SUCCESSFULLY");
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error("🔥 SEND OTP FAILED:", err);
+    res.status(500).json({ error: "Failed to send OTP" });
+  }
+});
+
+
+
+/* ================= OTP: VERIFY ================= */
+/* ================= OTP: VERIFY ================= */
+/* ================= OTP: VERIFY ================= */
+app.post("/api/auth/verify-otp", async (req: Request, res: Response) => {
+  console.log("➡️ VERIFY OTP API CALLED");
+
+  try {
+    const { email, otp } = req.body;
+
+    console.log("📧 Email:", email);
+    console.log("🔐 OTP entered:", otp);
+
+    if (!email || !otp) {
+      console.log("❌ Missing email or OTP");
+      return res.status(400).json({ error: "Email and OTP required" });
+    }
+
+    const { data, error } = await supabase!
+      .from("email_otps")
+      .select("*")
+      .eq("email", email.toLowerCase())
+      .eq("otp", otp)
+      .eq("verified", false)
+      .gte("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    console.log("📦 DB OTP Record:", data);
+
+    if (error || !data) {
+      console.log("❌ OTP NOT FOUND / EXPIRED");
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+
+    // ✅ Mark OTP as verified
+    await supabase!
+      .from("email_otps")
+      .update({ verified: true })
+      .eq("id", data.id);
+
+    console.log("✅ OTP VERIFIED SUCCESSFULLY");
+
+    return res.json({
+      success: true,
+      message: "OTP verified",
+    });
+
+  } catch (err) {
+    console.error("🔥 VERIFY OTP FAILED:", err);
+    return res.status(500).json({ error: "OTP verification failed" });
+  }
+});
+
 
 /* ================= SERVER ================= */
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`)
-})
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});
